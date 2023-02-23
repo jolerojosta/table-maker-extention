@@ -1,0 +1,17 @@
+{
+  "name": "Applicant e-mail response generator",
+  "version": "0.3",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["activeTab"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "content_scripts": [
+    { "js": ["contentScript.js"],
+    "matches": ["<all_urls>"]}
+ ]
+}
