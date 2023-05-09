@@ -2,6 +2,7 @@ let tableArray = [] // text and +-
 
 let copiedText // text from page 
 let isInputEmpty
+let isInputEmptyWhileExtensionIsOpen = false
 
 
 const textEl = document.getElementById("selected-text")
@@ -25,16 +26,12 @@ chrome.runtime.sendMessage({ action: "getSelectedText" }, function (response) {
 })
 
 
-
-
 // get table from local storage if exists
 if (arrFromLocalStorage) {
   tableArray = arrFromLocalStorage
   //console.log(tableArray)
   render(tableArray)
 }
-
-
 
 
 // draw array
@@ -60,7 +57,6 @@ function addRowToTable(sign)
   
   const a = tableArray.length
   let char = (sign ? '+':'-')
-  //alert("copied text exists:" + !!copiedText)
 
   // adding text and sign to array
   //if (char && copiedText){
@@ -76,8 +72,12 @@ function addRowToTable(sign)
     
 
       textEl.innerHTML = `<b id="error-text">No text was selected</b>`
+      if (isInputEmptyWhileExtensionIsOpen === false)
+      {
+        tableArray.pop()
+        isInputEmptyWhileExtensionIsOpen = true
+      }
       
-      tableArray.pop()
       //removeEmptyValues(tableArray)
       
       render(tableArray)
