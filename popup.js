@@ -6,7 +6,7 @@ let isInputEmptyWhileExtensionIsOpen = false
 
 
 const textEl = document.getElementById("selected-text")
-const arrFromLocalStorage = JSON.parse( localStorage.getItem("tableArray") )
+const arrFromLocalStorage = JSON.parse( localStorage.getItem("tableArray"))
 
 const plusButton = document.getElementById("plus-btn")
 const minusButton = document.getElementById("minus-btn")
@@ -17,10 +17,8 @@ const languageBtn = document.getElementById("lang-changer")
 const tableEl = document.getElementById("data-table")
 
 
-let currentLanguage = JSON.parse( localStorage.getItem("lang") )
-if (!currentLanguage) {
-  currentLanguage = "en"
-}
+let currentLanguage = JSON.parse( localStorage.getItem("lang")) || "en";
+
 let yourText = `Your text: `
 let noTxtSelected = `No text was selected!`
 let copied = `Table copied!`
@@ -29,9 +27,8 @@ let secondH = document.getElementById("green")
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  document
     setLanguage(currentLanguage)
-});
+})
 
 
 // get selected text from page
@@ -73,12 +70,13 @@ function addRowToTable(sign)
   let char = (sign ? '+':'-')
 
   // adding text and sign to array
-  if (isInputEmpty === false){
+  if (!isInputEmpty){
     tableArray.push(copiedText, char)
   }
     
   // if text wasn't selected
-  else if (isInputEmpty === true)
+ 
+ else if (isInputEmpty)
   {
     
 
@@ -147,7 +145,7 @@ function setLanguage(lang){
   }
   localStorage.setItem("lang", JSON.stringify(currentLanguage))
 }
-languageBtn.addEventListener("click", function()
+languageBtn.addEventListener("click", () =>
 {
   if (currentLanguage === "ru")
   setLanguage("en")
@@ -158,21 +156,14 @@ languageBtn.addEventListener("click", function()
 
 
 // + 
-plusButton.addEventListener("click", function()
-{
-  addRowToTable(true)
-})
-
+plusButton.addEventListener("click", () => addRowToTable(true))
 
 // -
-minusButton.addEventListener("click", function()
-{    
-  addRowToTable(false)
-})
+minusButton.addEventListener("click", () => addRowToTable(false))
 
 
 // delete click event
-deleteBtn.addEventListener("dblclick", function()
+deleteBtn.addEventListener("dblclick", () =>
 {
   // delete from everywhere
   localStorage.clear()
@@ -183,7 +174,7 @@ deleteBtn.addEventListener("dblclick", function()
 })
 
 // copy table click event
-copyBtn.addEventListener("click", function()
+copyBtn.addEventListener("click", () =>
 {
     const tableToCopy = document.querySelector('#data-table').outerHTML
     copyToClipboard(tableToCopy, 'copy-table')
