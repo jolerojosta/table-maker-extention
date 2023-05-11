@@ -12,24 +12,41 @@ const plusButton = document.getElementById("plus-btn")
 const minusButton = document.getElementById("minus-btn")
 const copyBtn = document.getElementById("copy-btn")
 const deleteBtn = document.getElementById("delete-btn")
+const languageBtn = document.getElementById("lang-changer")
 
 const tableEl = document.getElementById("data-table")
+
+
+let currentLanguage = JSON.parse( localStorage.getItem("lang") )
+if (!currentLanguage) {
+  currentLanguage = "en"
+}
+let yourText = `Your text: `
+let noTxtSelected = `No text was selected!`
+let copied = `Table copied!`
+let firstH = document.getElementById("white")
+let secondH = document.getElementById("green")
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  document
+    setLanguage(currentLanguage)
+});
+
 
 // get selected text from page
 chrome.runtime.sendMessage({ action: "getSelectedText" }, function (response) {
   if (response)
-  textEl.innerHTML = `Your text: ${response}`
+  textEl.innerHTML = `${yourText}${response}`
   tableArray.push(response)
   copiedText = response
   isInputEmpty = !copiedText ? true : false
-  //alert("input emtpy: " + isInputEmpty +" copied text: " + copiedText)
 })
 
 
 // get table from local storage if exists
 if (arrFromLocalStorage) {
   tableArray = arrFromLocalStorage
-  //console.log(tableArray)
   render(tableArray)
 }
 
@@ -52,18 +69,12 @@ function render(arr) {
 // add two new elements to table
 function addRowToTable(sign)
 { 
-  
-  //alert("isInputEmpty: " + isInputEmpty)
-  
   const a = tableArray.length
   let char = (sign ? '+':'-')
 
   // adding text and sign to array
-  //if (char && copiedText){
   if (isInputEmpty === false){
     tableArray.push(copiedText, char)
-    
-    //removeEmptyValues(tableArray)
   }
     
   // if text wasn't selected
@@ -71,18 +82,14 @@ function addRowToTable(sign)
   {
     
 
-      textEl.innerHTML = `<b id="error-text">No text was selected</b>`
+      textEl.innerHTML = `<b id="error-text">${noTxtSelected}</b>`
       if (isInputEmptyWhileExtensionIsOpen === false)
       {
         tableArray.pop()
         isInputEmptyWhileExtensionIsOpen = true
       }
-      
-      //removeEmptyValues(tableArray)
-      
+
       render(tableArray)
-    
-      //isInputEmpty = false
     } 
   
   // it works
@@ -110,6 +117,46 @@ function removeEmptyValues(arr)
   return arr
 }
 
+function setLanguage(lang){
+  if (lang === "ru")
+  {
+    yourText = `Ваш текст: `
+    noTxtSelected = `Текст не выбран!`
+    copied = `Скопировано!`
+
+    firstH.textContent = `Обратный ответ`
+    secondH.textContent = `на резюме соискателя`
+    copyBtn.textContent = `Копировать`
+    deleteBtn.textContent = `Удалить всё`
+
+    currentLanguage = "ru"
+    
+  }
+  else if (lang === "en")
+  {
+    yourText = `Your text: `
+    noTxtSelected = `No text was selected!`
+    copied = `Table copied!`
+
+    firstH.textContent = `Applicant e-mail`
+    secondH.textContent = `response generator`
+    copyBtn.textContent = `Copy table`
+    deleteBtn.textContent = `Delete all`
+
+    currentLanguage = "en"
+  }
+  localStorage.setItem("lang", JSON.stringify(currentLanguage))
+}
+languageBtn.addEventListener("click", function()
+{
+  if (currentLanguage === "ru")
+  setLanguage("en")
+  else if (currentLanguage === "en")
+  setLanguage("ru")
+  
+})
+
+
 // + 
 plusButton.addEventListener("click", function()
 {
@@ -131,7 +178,7 @@ deleteBtn.addEventListener("dblclick", function()
   localStorage.clear()
   
   tableArray = []
-  textEl.textContent = (copiedText ? ("Your text: " + copiedText) : "")
+  textEl.textContent = (copiedText ? (yourText + copiedText) : "")
   tableEl.innerHTML = ''
 })
 
@@ -140,7 +187,7 @@ copyBtn.addEventListener("click", function()
 {
     const tableToCopy = document.querySelector('#data-table').outerHTML
     copyToClipboard(tableToCopy, 'copy-table')
-    textEl.innerHTML = `<b id="success-text">Table copied!</b>`
+    textEl.innerHTML = `<b id="success-text">${copied}</b>`
 })
 
 function copyToClipboard(html,id) {
