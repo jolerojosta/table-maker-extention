@@ -56,7 +56,7 @@ function render(arr) {
       tableItems += `
           <tr>
               <td>${arr[i]}</td>
-              <td>${arr[(i+1)]}</td>
+              <td class="sign-td">${arr[(i+1)]}</td>
           </tr>
       `
   }
